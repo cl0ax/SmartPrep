@@ -143,7 +143,7 @@ export default function ChatbotPage({ goBack }) {
                     <p>{currentQuestion}</p>
                 </div>
 
-                {/* Answer area — hidden after result */}
+                {/* Answer area - hidden after result */}
                 {!result && (
                     <>
             <textarea
@@ -178,11 +178,11 @@ export default function ChatbotPage({ goBack }) {
                         <p className="result-feedback">{result.feedback}</p>
 
                         <div className="result-hint">
-                            {result.rating === "GREEN"  && difficulty !== "Hard"  && "Nice work — difficulty going up!"}
-                            {result.rating === "RED"    && difficulty !== "Easy"  && "Keep practicing — difficulty going down."}
-                            {result.rating === "YELLOW" && "Good effort — same difficulty next round."}
-                            {result.rating === "GREEN"  && difficulty === "Hard"  && "Outstanding — you're at max difficulty!"}
-                            {result.rating === "RED"    && difficulty === "Easy"  && "Keep at it — review the fundamentals."}
+                            {result.rating === "GREEN"  && difficulty !== "Hard"  && "Nice work - difficulty going up!"}
+                            {result.rating === "RED"    && difficulty !== "Easy"  && "Keep practicing - difficulty going down."}
+                            {result.rating === "YELLOW" && "Good effort - same difficulty next round."}
+                            {result.rating === "GREEN"  && difficulty === "Hard"  && "Outstanding - you're at max difficulty!"}
+                            {result.rating === "RED"    && difficulty === "Easy"  && "Keep at it - review the fundamentals."}
                         </div>
 
                         <div className="result-actions">

@@ -4,9 +4,9 @@ export const INTAKE_QUESTIONS = [
     type: "single_select",
     prompt: "What best describes your Java programming experience?",
     options: [
-      "Beginner – Limited Java experience. Learning fundamental programming concepts and simple problem solving.",
-      "Intermediate – Comfortable with core Java concepts and basic data structures. Can solve standard problems with minimal guidance.",
-      "Experienced – Confident writing Java programs and solving intermediate algorithmic problems independently."
+      "Beginner - Limited Java experience. Learning fundamental programming concepts and simple problem solving.",
+      "Intermediate - Comfortable with core Java concepts and basic data structures. Can solve standard problems with minimal guidance.",
+      "Experienced - Confident writing Java programs and solving intermediate algorithmic problems independently."
     ]
   },
 

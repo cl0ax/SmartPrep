@@ -5,7 +5,7 @@
 SmartPrep helps users practice coding and interview-style questions tailored to
 their proficiency. It executes and validates submitted solutions, scores them,
 tracks skill over time, and adapts problem difficulty so practice stays
-challenging but never overwhelming — the way a good interviewer would push you.
+challenging but never overwhelming - the way a good interviewer would push you.
 
 Built as a full-stack capstone project with a React frontend, a Spring Boot
 backend, and a cloud-hosted database.
@@ -14,18 +14,18 @@ backend, and a cloud-hosted database.
 
 ## Features
 
-- **Proficiency scoring engine** — computes a skill level (1–100) from an intake
+- **Proficiency scoring engine** - computes a skill level (1-100) from an intake
   questionnaire with experience-level multipliers, then maps that score to
   Easy / Medium / Hard problem tiers.
-- **Adaptive difficulty** — problems scale up or down as the user answers, so the
+- **Adaptive difficulty** - problems scale up or down as the user answers, so the
   difficulty tracks their actual ability instead of a fixed path.
-- **Server-side code execution** — user-submitted Java is compiled and run on the
+- **Server-side code execution** - user-submitted Java is compiled and run on the
   backend via the JDK `JavaCompiler` API, then checked against test cases.
-- **Test-case validation & runtime measurement** — solutions are verified for
+- **Test-case validation & runtime measurement** - solutions are verified for
   correctness and timed for efficiency.
-- **AI interview practice** — an integrated chatbot (Google Gemini) evaluates
+- **AI interview practice** - an integrated chatbot (Google Gemini) evaluates
   answers against a custom rubric to give structured, consistent feedback.
-- **Secure authentication** — all endpoints protected with Spring Security,
+- **Secure authentication** - all endpoints protected with Spring Security,
   password hashing, and unique-constraint enforcement.
 
 ---
@@ -45,7 +45,7 @@ backend, and a cloud-hosted database.
 
 ## Architecture
 
-SmartPrep follows a client–server design with a clear data flow end to end:
+SmartPrep follows a client-server design with a clear data flow end to end:
 
 ```
 React frontend  ⇄  Spring Boot REST API  ⇄  MySQL / AWS RDS
@@ -55,7 +55,7 @@ React frontend  ⇄  Spring Boot REST API  ⇄  MySQL / AWS RDS
 ```
 
 The backend owns all execution and scoring logic, so the client never trusts
-user-submitted code directly — submissions are compiled, sandboxed, and validated
+user-submitted code directly - submissions are compiled, sandboxed, and validated
 server-side before results return to the UI.
 
 ---
@@ -104,8 +104,8 @@ SmartPrep was my first end-to-end full-stack build, and the hardest parts were
 the ones that mattered most: safely executing untrusted user code on the server,
 designing a scoring engine that actually *felt* adaptive, and controlling an AI
 model by injecting our own rubric into the prompt instead of trusting raw output.
-It taught me how the pieces of a real application — auth, data flow, execution,
-and a third-party API — fit together, and how much of good engineering is
+It taught me how the pieces of a real application - auth, data flow, execution,
+and a third-party API - fit together, and how much of good engineering is
 decisions made before you write the first line of code.
 
 ---

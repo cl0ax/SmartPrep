@@ -62,7 +62,7 @@ public class ChatbotServiceImpl implements ChatbotService {
         String feedback = "No feedback available.";
 
         try {
-            // Gemini sometimes wraps JSON in markdown fences — strip them
+            // Gemini sometimes wraps JSON in markdown fences - strip them
             String cleaned = rawText.trim()
                     .replaceAll("(?s)```json\\s*", "")
                     .replaceAll("(?s)```\\s*", "")
@@ -121,7 +121,7 @@ public class ChatbotServiceImpl implements ChatbotService {
                 3. completeness  - Is the explanation thorough enough?
                 4. clarity       - Is the answer clear and well-communicated?
                 
-                Reply ONLY with this exact JSON and nothing else — no markdown, no extra text:
+                Reply ONLY with this exact JSON and nothing else - no markdown, no extra text:
                 {"relevance":<score>,"correctness":<score>,"completeness":<score>,"clarity":<score>,"feedback":"<one concise sentence of feedback>"}
                 """, difficulty, question, answer);
     }
@@ -216,7 +216,7 @@ public class ChatbotServiceImpl implements ChatbotService {
                 submissionRepository.save(submission);
             }
         } catch (Exception e) {
-            // Non-critical — don't let a failed save break the response
+            // Non-critical - don't let a failed save break the response
             System.err.println("Could not save chatbot submission: " + e.getMessage());
         }
     }

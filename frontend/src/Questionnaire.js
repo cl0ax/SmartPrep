@@ -87,9 +87,9 @@ export default function Questionnaire({ questions, goBack, onSubmit }) {
         }
 
         // apply Java experience boost to all proficiencies
-        if (javaExperience === "Intermediate – Comfortable with core Java concepts and basic data structures. Can solve standard problems with minimal guidance.") {
+        if (javaExperience === "Intermediate - Comfortable with core Java concepts and basic data structures. Can solve standard problems with minimal guidance.") {
           proficiency = Math.round(proficiency * 1.3);
-        } else if (javaExperience === "Experienced – Confident writing Java programs and solving intermediate algorithmic problems independently.") {
+        } else if (javaExperience === "Experienced - Confident writing Java programs and solving intermediate algorithmic problems independently.") {
           proficiency = Math.round(proficiency * 1.7);
         }
         console.log(proficiency);
