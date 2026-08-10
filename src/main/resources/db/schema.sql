@@ -30,15 +30,15 @@ CREATE TABLE `Categories` (
 CREATE TABLE `Problems` (
   `problem_ID` bigint NOT NULL,
   `category_ID` int DEFAULT NULL,
-  `examples` varchar(255) DEFAULT NULL,
+  `examples` text,
   `sampleExpectedOutput` varchar(255) DEFAULT NULL,
   `methodName` varchar(255) DEFAULT NULL,
   `parameterType` varchar(255) DEFAULT NULL,
   `difficulty` enum('EASY','HARD','MEDIUM') NOT NULL,
-  `prompt` varchar(255) DEFAULT NULL,
+  `prompt` text,
   `returnType` varchar(255) DEFAULT NULL,
-  `sampleTestCase` varchar(255) DEFAULT NULL,
-  `starterCode` varchar(255) DEFAULT NULL,
+  `sampleTestCase` text,
+  `starterCode` text,
   `pTitle` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`problem_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

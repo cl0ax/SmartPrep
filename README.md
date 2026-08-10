@@ -1,57 +1,131 @@
 # SmartPrep
 
-An adaptive coding interview prep platform. React front end, Spring Boot back
-end, MySQL, with server side execution of submitted Java and AI generated
-interview practice.
+**Adaptive coding interview prep.** Rate your own comfort with a topic, and
+SmartPrep tracks a proficiency score per topic, serves problems from it, runs
+your Java against real test cases on the server, and gives AI feedback on spoken
+style interview answers.
 
-![SmartPrep: sign up, proficiency assessment, dashboard, running a solution, AI interview practice](docs/demo.gif)
+React · Spring Boot · MySQL · Monaco Editor · Google Gemini
 
-The recording is a real local run: signing up, the four question proficiency
-assessment, the dashboard where those answers become live proficiency scores,
-opening a problem, running a solution against its test case, and the AI
-interview practice screen.
+![SmartPrep end to end](docs/demo.gif)
+
+Every recording below is a real local run against the real backend. Nothing is
+mocked.
 
 ---
 
-## About this fork
+## Sign up and sign in
 
-This is a fork of [josephbarron-dev/SmartPrep](https://github.com/josephbarron-dev/SmartPrep),
-a three person capstone project. Joseph Barron created and owns the original.
+Account creation with client side validation, and login that reports what went
+wrong instead of failing silently.
 
-**What I contributed to the original repository**, visible in its commit
-history:
+![Authentication](docs/auth.gif)
 
-- **The AI feedback subsystem.** `ChatbotService` and `ChatbotServiceImpl`, the
-  `ChatbotController`, the request and response DTOs, and the `ChatbotPage`
-  React component and its styling. This is the "AI Practice" screen in the
-  recording: pick a category and difficulty, get a generated interview question,
-  submit an answer, get evaluated.
-- **The JPA domain model.** The `Problem`, `Submission`, `Proficiency`,
-  `Category`, `User` and `TestCase` entities, plus the `ProblemDifficulty` and
-  `SolutionRating` enums. These are the tables in `db/schema.sql`.
+Shown above: mismatched passwords blocked at the client before any request is
+sent, then a successful sign up, then signing back in with a wrong password
+(`Invalid email or password`), then the correct one.
 
-Roughly 1,400 lines across those two areas. The rest of the application is my
-teammates' work.
+The password is hashed before storage; the `Users` table holds `pass_hash`, not
+the password. Login is `POST /api/v1/users/login`, and the front end surfaces the
+server's rejection through a shared error state rather than leaving the form
+sitting there.
 
-**What this fork adds on top of the original:**
+---
 
-- `src/main/resources/db/schema.sql` and `db/seed.sql`, so the project can
-  actually be started from a clean clone (see below)
-- this README and the demo recording
+## Proficiency assessment
+
+New accounts answer four short questions, and those answers seed the starting
+proficiency for each topic.
+
+![Onboarding assessment](docs/assessment.gif)
+
+This is what makes it adaptive rather than a static problem list. The answers
+write `Proficiencies` rows keyed by user and category, which is why two accounts
+that answer differently see different starting percentages on the dashboard.
+Answer higher and the bars start higher.
+
+---
+
+## Dashboard
+
+Topic progress at a glance, plus entry points to the two practice modes.
+
+![Dashboard](docs/dashboard.gif)
+
+Each bar is that user's live proficiency for the category, read from
+`GET /api/v1/proficiencies/{userId}/{categoryId}`. Picking a topic pulls a
+problem matched to the user through
+`GET /api/v1/problem/{userId}/{categoryId}`. **Random Problem** skips the choice,
+and **View Previous Submissions** replays past attempts and scores.
+
+---
+
+## Solving a problem
+
+A full editor, a sample test case, and real execution on the server.
+
+![Solving a problem](docs/solve.gif)
+
+The editor is Monaco, the same one that powers VS Code, with Java syntax
+highlighting. Each problem ships starter code, its prompt, a sample input and
+the expected output.
+
+**Run** (`POST /api/v1/solution/run`) sends the source to the backend, which
+compiles it in memory with `javax.tools.JavaCompiler`, invokes the method against
+the sample test case, and returns the result. **Submit Final Answer**
+(`POST /api/v1/solution`) records the attempt and updates the proficiency that
+feeds the dashboard.
+
+Problems span `EASY`, `MEDIUM` and `HARD` across the three categories.
+
+---
+
+## AI interview practice
+
+Written interview questions with model graded feedback, filtered by topic and
+difficulty.
+
+Pick a category and a difficulty, get a question, write an answer in your own
+words, and submit it for evaluation. This calls
+`POST /api/v1/chatbot/evaluate`, which prompts Google Gemini with the question,
+the answer and the difficulty, and returns a score plus written feedback.
+
+> Requires a `GEMINI_API_KEY`. Without one, the rest of the application works and
+> only this screen fails. There is no recording of this feature yet for that
+> reason.
+
+---
+
+## Architecture
+
+```
+  React 19 (3000)  ──HTTP──►  Spring Boot 3.5 (8080)  ──JPA / Hibernate──►  MySQL 8
+      Monaco                        │
+                                    ├─► javax.tools.JavaCompiler   run a solution
+                                    └─► Google Gemini              grade an answer
+```
+
+| Endpoint | Purpose |
+|---|---|
+| `POST /api/v1/users` | create an account |
+| `POST /api/v1/users/login` | authenticate |
+| `GET /api/v1/proficiencies/{userId}/{categoryId}` | dashboard progress bars |
+| `GET /api/v1/problem/{userId}/{categoryId}` | select a problem for this user |
+| `POST /api/v1/solution/run` | compile and run against the sample test case |
+| `POST /api/v1/solution` | submit, record, update proficiency |
+| `POST /api/v1/chatbot/evaluate` | grade a written interview answer |
+
+Six tables: `Users`, `Categories`, `Problems`, `Test_Cases`, `Submissions`,
+`Proficiencies`. Full DDL in [`src/main/resources/db/schema.sql`](src/main/resources/db/schema.sql).
 
 ---
 
 ## Running it locally
 
-The original was developed against AWS RDS and the schema was never committed,
-so a clean clone could not start: `spring.jpa.hibernate.ddl-auto` is `none` and
-there were no migrations. That is what `db/schema.sql` fixes.
-
 ### Requirements
 
-- JDK 17 or newer. A full JDK, not a JRE, because submitted solutions are
-  compiled at runtime through `javax.tools.JavaCompiler`.
-- MySQL 8.0 or newer
+- **A full JDK 17+**, not a JRE. Submitted solutions are compiled at runtime.
+- MySQL 8.0+
 - Node.js and npm
 - A Google Gemini API key, for the AI practice screen only
 
@@ -63,9 +137,9 @@ mysql -u root smartprep < src/main/resources/db/schema.sql
 mysql -u root smartprep < src/main/resources/db/seed.sql
 ```
 
-The seed gives you three categories and a few problems with test cases, which is
-the minimum the dashboard and the coding view need. Users and proficiency rows
-are created by the signup flow, so do not seed those.
+The seed provides three categories and eight problems across all three
+difficulties, with their test cases. Users and proficiency rows are created by
+the signup flow, so they are not seeded.
 
 ### 2. Backend
 
@@ -77,7 +151,7 @@ GEMINI_API_KEY=yourkey \
 ./mvnw spring-boot:run
 ```
 
-Serves on port 8080.
+Port 8080.
 
 ### 3. Frontend
 
@@ -87,46 +161,45 @@ npm install
 npm start
 ```
 
-Serves on port 3000.
+Port 3000.
 
-**Both ports matter.** The frontend calls `http://localhost:8080` directly, and
+**Both ports matter.** The front end calls `http://localhost:8080` directly and
 the controllers are annotated `@CrossOrigin(origins = "http://localhost:3000")`.
-Run either on a different port and requests are blocked by CORS until you change
-both sides.
+Change one and you must change the other, or the browser blocks every request.
 
 ---
 
-## How it fits together
+## About this repository
 
-```
-  React (3000)  ──HTTP──►  Spring Boot (8080)  ──JPA──►  MySQL
-                                   │
-                                   ├─► javax.tools.JavaCompiler   (run a solution)
-                                   └─► Gemini API                 (AI practice)
-```
+This is a fork of [josephbarron-dev/SmartPrep](https://github.com/josephbarron-dev/SmartPrep),
+a three person capstone project. Joseph Barron created and owns the original.
 
-- `POST /api/v1/users` and `/login` handle accounts
-- `GET /api/v1/proficiencies/{userId}/{categoryId}` backs the dashboard bars
-- `GET /api/v1/problem/{userId}/{categoryId}` selects a problem for that user
-- `POST /api/v1/solution/run` compiles and runs a solution against the sample
-  test case; `POST /api/v1/solution` submits it
-- `POST /api/v1/chatbot/evaluate` scores a written interview answer
+**My contribution to the original**, visible in its commit history:
 
-The proficiency assessment at signup seeds the initial per category scores,
-which is why two different sets of answers produce different dashboard
-percentages.
+- **The AI feedback subsystem** end to end: `ChatbotService`,
+  `ChatbotServiceImpl`, `ChatbotController`, the request and response DTOs, and
+  the `ChatbotPage` React component with its styling.
+- **The JPA domain model**: the `Problem`, `Submission`, `Proficiency`,
+  `Category`, `User` and `TestCase` entities, plus the `ProblemDifficulty` and
+  `SolutionRating` enums. These are the six tables above.
+
+Roughly 1,400 lines across those two areas. The rest is my teammates' work.
+
+**What this fork adds:** the schema and seed, so the project starts from a clean
+clone; widened `TEXT` columns for problem content, which previously truncated
+starter code to 255 characters and forced it onto a single unreadable line; the
+demo recordings; and this README.
 
 ---
 
 ## Known limitations
 
-- **Submitted Java is compiled and executed on the server with no sandbox.**
-  This is fine on localhost. It is not safe to expose publicly as is: pasted
-  code can read environment variables, touch the filesystem and open network
-  connections. Hosting this would require a locked down container per run.
-- The AI practice screen needs `GEMINI_API_KEY`. Without it the rest of the app
-  works and only that screen fails.
-- `db/schema.sql` is generated from the current JPA entities rather than
-  recovered from the original RDS instance, which was never committed. It is
-  consistent with the code, and loading schema then seed into an empty database
-  was verified to produce a working app.
+- **Submitted Java is compiled and executed server side with no sandbox.** Fine
+  on localhost, not safe to expose publicly: pasted code can read environment
+  variables, touch the filesystem and open network connections. Hosting it would
+  need a locked down container per run.
+- The AI practice screen needs `GEMINI_API_KEY`.
+- `schema.sql` is generated from the current JPA entities. The original ran
+  against AWS RDS and that schema was never committed, so this is a
+  reconstruction, verified by loading it into an empty database and running the
+  app against it.

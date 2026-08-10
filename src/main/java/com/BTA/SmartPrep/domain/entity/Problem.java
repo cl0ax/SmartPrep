@@ -34,10 +34,10 @@ public class Problem {
     @Column(name = "pTitle")
     private String title;
 
-    @Column(name = "prompt")
+    @Column(name = "prompt", columnDefinition = "TEXT")
     private String prompt;
 
-    @Column(name = "examples")
+    @Column(name = "examples", columnDefinition = "TEXT")
     private String examples;
 
     @Enumerated(EnumType.STRING)
@@ -47,11 +47,11 @@ public class Problem {
     @Column(name = "category_ID")
     private int category;
 
-    @Column(name = "starterCode")
+    @Column(name = "starterCode", columnDefinition = "TEXT")
     private String starterCode;
 
 
-    @Column(name = "sampleTestCase")
+    @Column(name = "sampleTestCase", columnDefinition = "TEXT")
     private String sampleTestCase;
 
     public String getExpectedOutput() {
