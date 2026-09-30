@@ -1,0 +1,63 @@
+.history-shell {
+  min-height: 100vh;
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  background: radial-gradient(900px 500px at 10% 0%, rgba(124, 92, 255, 0.22), transparent 60%),
+              radial-gradient(700px 400px at 100% 20%, rgba(90, 139, 255, 0.16), transparent 60%),
+              #0b1220;
+  color: #eaf0ff;
+}
+
+.history-card {
+  width: min(860px, 100%);
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+  padding: 28px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(18, 26, 51, 0.95), rgba(10, 14, 28, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+}
+
+.history-eyebrow {
+  margin: 0;
+  color: #9fb0ff;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.history-card h1 { margin: 8px 0; font-size: 2.2rem; }
+.history-intro { margin-top: 0; color: #c8d4f4; }
+.history-state { padding: 18px; color: #c8d4f4; }
+.history-error { color: #fca5a5; }
+.history-list { display: flex; flex-direction: column; gap: 14px; margin: 22px 0; }
+
+.history-entry {
+  padding: 18px;
+  border-radius: 16px;
+  background: rgba(10, 14, 28, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.history-entry-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.history-entry h2 { margin: 0; font-size: 1.15rem; }
+.history-grade { font-weight: 800; letter-spacing: 0.04em; }
+.history-grade.green { color: #22c55e; }
+.history-grade.yellow { color: #facc15; }
+.history-grade.red { color: #ef4444; }
+.history-date { display: block; margin-top: 8px; color: #9fb0ff; font-size: 0.9rem; }
+.history-code { margin-top: 14px; color: #c8d4f4; }
+.history-code summary { cursor: pointer; color: #aebfff; }
+.history-code pre { max-height: 260px; overflow: auto; padding: 14px; border-radius: 10px; background: #080d19; white-space: pre-wrap; overflow-wrap: anywhere; }
+.history-back { width: 100%; padding: 14px; border: 0; border-radius: 14px; background: linear-gradient(135deg, #7c5cff, #5a8bff); color: white; font-weight: 700; cursor: pointer; }
+
+@media (max-width: 650px) {
+  .history-shell { padding: 16px; }
+  .history-card { max-height: calc(100vh - 32px); padding: 20px; }
+  .history-card h1 { font-size: 1.8rem; }
+}

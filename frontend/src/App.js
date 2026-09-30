@@ -8,6 +8,7 @@ import ProblemSelection from "./ProblemSelection";
 import ChatbotPage from "./ChatbotPage";
 import { UserProvider, useUser } from "./UserContext";
 import ResultsPage from "./ResultsPage";
+import SubmissionHistory from "./SubmissionHistory";
 
 function AppContent() {
   const { user } = useUser();
@@ -46,6 +47,10 @@ function AppContent() {
         />
       )}
 
+      {screen === "submissions" && (
+        <SubmissionHistory goBack={() => setScreen("problemSelection")} />
+      )}
+
       {screen === "problemSelection" && (
         <ProblemSelection
           goBack={() => setScreen("questionnaire")}
@@ -55,6 +60,7 @@ function AppContent() {
             setScreen("ProblemPage");
           }}
           goToChatbot={() => setScreen("chatbot")}
+          goToSubmissions={() => setScreen("submissions")}
         />
       )}
 

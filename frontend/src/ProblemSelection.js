@@ -3,7 +3,7 @@ import "./ProblemSelection.css";
 import { useEffect, useState } from "react";
 import { useUser } from "./UserContext";
 
-export default function ProblemSelection({ goToProblemPage, goBack, goToChatbot }) {
+export default function ProblemSelection({ goToProblemPage, goBack, goToChatbot, goToSubmissions }) {
   const { user } = useUser();
   const [isLoadingProblem, setIsLoadingProblem] = useState(false);
   const [problemError, setProblemError] = useState("");
@@ -156,11 +156,12 @@ export default function ProblemSelection({ goToProblemPage, goBack, goToChatbot 
             <button
               type="button"
               className="feature-card submissions-card"
+              onClick={goToSubmissions}
             >
               <span className="feature-eyebrow">History</span>
               <span className="feature-title">View Previous Submissions</span>
               <span className="feature-copy">
-                Review past answers, scores, and progress.
+                Review past answers, grades, and submission dates.
               </span>
             </button>
 

@@ -2,11 +2,13 @@ package com.BTA.SmartPrep.controller;
 
 import com.BTA.SmartPrep.domain.dto.problem.SolutionRequestDto;
 import com.BTA.SmartPrep.domain.dto.problem.SolutionSubmissionDto;
+import com.BTA.SmartPrep.domain.dto.submission.SubmissionHistoryDto;
 import com.BTA.SmartPrep.service.SolutionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -49,5 +51,10 @@ public class SolutionController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/submissions")
+    public ResponseEntity<List<SubmissionHistoryDto>> getSubmissions(@RequestParam String userId) {
+        return ResponseEntity.ok(solutionService.getSubmissions(userId));
     }
 }

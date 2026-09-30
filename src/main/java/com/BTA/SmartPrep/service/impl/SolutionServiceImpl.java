@@ -2,15 +2,22 @@ package com.BTA.SmartPrep.service.impl;
 
 import com.BTA.SmartPrep.domain.UpdateProfficiencyRequest;
 import com.BTA.SmartPrep.domain.dto.problem.SolutionSubmissionDto;
+import com.BTA.SmartPrep.domain.dto.submission.SubmissionHistoryDto;
 import com.BTA.SmartPrep.domain.entity.Problem;
+import com.BTA.SmartPrep.domain.entity.SolutionRating;
+import com.BTA.SmartPrep.domain.entity.Submission;
 import com.BTA.SmartPrep.domain.entity.TestCase;
+import com.BTA.SmartPrep.domain.entity.User;
 import com.BTA.SmartPrep.repository.ProblemRepository;
+import com.BTA.SmartPrep.repository.SubmissionRepository;
 import com.BTA.SmartPrep.repository.TestCaseRepository;
+import com.BTA.SmartPrep.repository.UserRepository;
 import com.BTA.SmartPrep.service.ProfficiencyService;
 import com.BTA.SmartPrep.service.SolutionService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
@@ -24,6 +31,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.time.LocalDateTime;
 
 @Service
 public class SolutionServiceImpl implements SolutionService {
@@ -31,18 +39,25 @@ public class SolutionServiceImpl implements SolutionService {
     private final TestCaseRepository testCaseRepository;
     private final ObjectMapper objectMapper;
     private final ProfficiencyService profficiencyService;
+    private final UserRepository userRepository;
+    private final SubmissionRepository submissionRepository;
 
     public SolutionServiceImpl(ProblemRepository problemRepository,
                                TestCaseRepository testCaseRepository,
                                ObjectMapper objectMapper,
-                               ProfficiencyService profficiencyService) {
+                               ProfficiencyService profficiencyService,
+                               UserRepository userRepository,
+                               SubmissionRepository submissionRepository) {
         this.problemRepository = problemRepository;
         this.testCaseRepository = testCaseRepository;
         this.objectMapper = objectMapper;
         this.profficiencyService = profficiencyService;
+        this.userRepository = userRepository;
+        this.submissionRepository = submissionRepository;
     }
 
     @Override
+    @Transactional
     public SolutionSubmissionDto solutionGrade(String codeString, long problemId, String userId, int categoryId) {
         Problem problem = problemRepository.findById(problemId)
                 .orElseThrow(() -> new RuntimeException("Problem not found for id: " + problemId));
@@ -123,11 +138,32 @@ public class SolutionServiceImpl implements SolutionService {
             System.out.println(color);
             UpdateProfficiencyRequest updateProfficiencyRequest = new UpdateProfficiencyRequest(userId,categoryId,profficiencyChange);
             profficiencyService.updateProfficiency(updateProfficiencyRequest);
+            User user = userRepository.findByUserId(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found for id: " + userId));
+            Submission submission = new Submission();
+            submission.setUser(user);
+            submission.setProblem(problem);
+            submission.setAnswer(codeString);
+            submission.setSolutionRating(SolutionRating.valueOf(color.toUpperCase()));
+            submission.setSubmittedAt(LocalDateTime.now());
+            submissionRepository.save(submission);
             SolutionSubmissionDto solutionSubmissionDto = new SolutionSubmissionDto(color,passedCount,testCases.size(),score,failedCases, message,runTimeMs,runtimeLogic);
             return solutionSubmissionDto;
         } catch (Exception e) {
             throw new RuntimeException("Grading failed: " + e.getMessage(), e);
         }
+    }
+
+    @Override
+    public List<SubmissionHistoryDto> getSubmissions(String userId) {
+        return submissionRepository.findByUser_UserIdAndProblemIsNotNullOrderBySubmittedAtDesc(userId).stream()
+                .map(submission -> new SubmissionHistoryDto(
+                        submission.getSubmissionId(),
+                        submission.getProblem() == null ? "Unknown problem" : submission.getProblem().getTitle(),
+                        submission.getSolutionRating(),
+                        submission.getSubmittedAt(),
+                        submission.getAnswer()))
+                .toList();
     }
 
     @Override
