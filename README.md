@@ -188,28 +188,24 @@ Change one and you must change the other, or the browser blocks every request.
 
 ---
 
-## About this repository
+## About this project
 
-This is a fork of [josephbarron-dev/SmartPrep](https://github.com/josephbarron-dev/SmartPrep),
-a three person capstone project. Joseph Barron created and owns the original.
+SmartPrep started as a three-person capstone project, and this repository
+continues from the team's final version.
 
-**My contribution to the original**, visible in its commit history:
+**What I built:**
 
-- **The AI feedback subsystem** end to end: `ChatbotService`,
+- **The AI feedback subsystem**, end to end: `ChatbotService`,
   `ChatbotServiceImpl`, `ChatbotController`, the request and response DTOs, and
   the `ChatbotPage` React component with its styling.
 - **The JPA domain model**: the `Problem`, `Submission`, `Proficiency`,
   `Category`, `User` and `TestCase` entities, plus the `ProblemDifficulty` and
   `SolutionRating` enums. These are the six tables above.
+- **After the class:** the database schema and seed so it runs from a clean
+  clone, `TEXT` columns for problem content (starter code used to get cut at 255
+  characters and squashed onto one line), and the coding submission history.
 
-Roughly 1,400 lines across those two areas. The rest is my teammates' work.
-
-**What this fork adds:** the schema and seed, so the project starts from a clean
-clone; widened `TEXT` columns for problem content, which previously truncated
-starter code to 255 characters and forced it onto a single unreadable line;
-coding submission history (graded solutions are saved and listed on the
-previously unwired **View Previous Submissions** page); the demo recordings; and
-this README.
+The rest is my teammates' work.
 
 ---
 
