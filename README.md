@@ -21,9 +21,8 @@ wrong instead of failing silently.
 
 ![Authentication](docs/auth.gif)
 
-Shown above: mismatched passwords blocked at the client before any request is
-sent, then a successful sign up, then signing back in with a wrong password
-(`Invalid email or password`), then the correct one.
+Shown above: a new account signing up. Signing back in appears further down,
+in the history recording.
 
 The password is hashed before storage; the `Users` table holds `pass_hash`, not
 the password. Login is `POST /api/v1/users/login`, and the front end surfaces the
@@ -56,7 +55,7 @@ Each bar is that user's live proficiency for the category, read from
 `GET /api/v1/proficiencies/{userId}/{categoryId}`. Picking a topic pulls a
 problem matched to the user through
 `GET /api/v1/problem/{userId}/{categoryId}`. **Random Problem** skips the choice,
-and **View Previous Submissions** replays past attempts and scores.
+and **View Previous Submissions** opens every graded coding submission.
 
 ---
 
@@ -80,6 +79,20 @@ Problems span `EASY`, `MEDIUM` and `HARD` across the three categories.
 
 ---
 
+## Submission history
+
+Every graded solution is saved, and **View Previous Submissions** lists them
+newest first with the problem, the grade, the time and the code you submitted.
+
+![Submission history](docs/history.gif)
+
+Shown above: the submission from the recording before it appears in the
+history with its code, then the page is reloaded to the sign-in screen (there is
+no logout button yet), the user signs back in, and it is still there. Grading saves the attempt (`POST /api/v1/solution`), and the page reads
+`GET /api/v1/solution/submissions?userId=`.
+
+---
+
 ## AI interview practice
 
 Written interview questions with model graded feedback, filtered by topic and
@@ -90,9 +103,13 @@ words, and submit it for evaluation. This calls
 `POST /api/v1/chatbot/evaluate`, which prompts Google Gemini with the question,
 the answer and the difficulty, and returns a score plus written feedback.
 
+![AI interview practice](docs/ai-interview.gif)
+
+Shown above: a medium Two Pointers question, a typed answer, a 99/100 score with
+feedback, and the topic's progress going up on the dashboard.
+
 > Requires a `GEMINI_API_KEY`. Without one, the rest of the application works and
-> only this screen fails. There is no recording of this feature yet for that
-> reason.
+> only this screen fails.
 
 ---
 
@@ -189,8 +206,10 @@ Roughly 1,400 lines across those two areas. The rest is my teammates' work.
 
 **What this fork adds:** the schema and seed, so the project starts from a clean
 clone; widened `TEXT` columns for problem content, which previously truncated
-starter code to 255 characters and forced it onto a single unreadable line; the
-demo recordings; and this README.
+starter code to 255 characters and forced it onto a single unreadable line;
+coding submission history (graded solutions are saved and listed on the
+previously unwired **View Previous Submissions** page); the demo recordings; and
+this README.
 
 ---
 
