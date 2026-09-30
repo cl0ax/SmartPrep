@@ -206,17 +206,3 @@ continues from the team's final version.
   characters and squashed onto one line), and the coding submission history.
 
 The rest is my teammates' work.
-
----
-
-## Known limitations
-
-- **Submitted Java is compiled and executed server side with no sandbox.** Fine
-  on localhost, not safe to expose publicly: pasted code can read environment
-  variables, touch the filesystem and open network connections. Hosting it would
-  need a locked down container per run.
-- The AI practice screen needs `GEMINI_API_KEY`.
-- `schema.sql` is generated from the current JPA entities. The original ran
-  against AWS RDS and that schema was never committed, so this is a
-  reconstruction, verified by loading it into an empty database and running the
-  app against it.
