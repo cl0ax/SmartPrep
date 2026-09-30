@@ -141,6 +141,8 @@ The seed provides three categories and eight problems across all three
 difficulties, with their test cases. Users and proficiency rows are created by
 the signup flow, so they are not seeded.
 
+For an existing database, run `ALTER TABLE Submissions MODIFY answer TEXT;`.
+
 ### 2. Backend
 
 ```bash

@@ -61,7 +61,7 @@ CREATE TABLE `Test_Cases` (
 
 CREATE TABLE `Submissions` (
   `submission_ID` varchar(255) NOT NULL,
-  `answer` varchar(255) DEFAULT NULL,
+  `answer` text DEFAULT NULL,
   `rating` enum('GREEN','RED','YELLOW') DEFAULT NULL,
   `submitted_at` datetime(6) NOT NULL,
   `problem_ID` bigint DEFAULT NULL,
