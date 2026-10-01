@@ -1,117 +1,71 @@
-# SmartPrep
+<h1 align="center">SmartPrep</h1>
 
-**Adaptive coding interview prep.** Rate your own comfort with a topic, and
-SmartPrep tracks a proficiency score per topic, serves problems from it, runs
-your Java against real test cases on the server, and gives AI feedback on spoken
-style interview answers.
+<p align="center">
+  Adaptive coding interview prep: a proficiency score per topic, Java run against real test cases on the server, and AI feedback on interview answers.
+</p>
 
-React · Spring Boot · MySQL · Monaco Editor · Google Gemini
+<p align="center">
+  <a href="#features">Features</a> ·
+  <a href="#architecture">Architecture</a> ·
+  <a href="#running-it-locally">Running it locally</a> ·
+  <a href="#notes">Notes</a>
+</p>
 
-![SmartPrep end to end](docs/demo.gif)
+<p align="center">
+  <img src="https://img.shields.io/badge/language-Java%2017-orange" alt="Java 17">
+  <img src="https://img.shields.io/badge/framework-Spring%20Boot%203.5-6db33f" alt="Spring Boot 3.5">
+  <img src="https://img.shields.io/badge/frontend-React%2019-61dafb" alt="React 19">
+  <img src="https://img.shields.io/badge/database-MySQL%208-4479a1" alt="MySQL 8">
+  <img src="https://img.shields.io/badge/AI-Google%20Gemini-8e75b2" alt="Google Gemini">
+  <img src="https://img.shields.io/badge/team-3%20person%20capstone-lightgrey" alt="Three person capstone team">
+</p>
 
-Every recording below is a real local run against the real backend. Nothing is
-mocked.
+<p align="center">
+  <img src="docs/demo.gif" width="720" alt="SmartPrep end to end: signing up, the onboarding questions, the dashboard, solving a problem, the submission history and the AI interview">
+</p>
 
----
+Every recording on this page is a real local run against the real backend. Nothing is mocked.
 
-## Sign up and sign in
+## Features
 
-Account creation with client side validation, and login that reports what went
-wrong instead of failing silently.
-
-![Authentication](docs/auth.gif)
-
-Shown above: a new account signing up. Signing back in appears further down,
-in the history recording.
-
-The password is hashed before storage; the `Users` table holds `pass_hash`, not
-the password. Login is `POST /api/v1/users/login`, and the front end surfaces the
-server's rejection through a shared error state rather than leaving the form
-sitting there.
-
----
-
-## Proficiency assessment
-
-New accounts answer four short questions, and those answers seed the starting
-proficiency for each topic.
-
-![Onboarding assessment](docs/assessment.gif)
-
-This is what makes it adaptive rather than a static problem list. The answers
-write `Proficiencies` rows keyed by user and category, which is why two accounts
-that answer differently see different starting percentages on the dashboard.
-Answer higher and the bars start higher.
-
----
-
-## Dashboard
-
-Topic progress at a glance, plus entry points to the two practice modes.
-
-![Dashboard](docs/dashboard.gif)
-
-Each bar is that user's live proficiency for the category, read from
-`GET /api/v1/proficiencies/{userId}/{categoryId}`. Picking a topic pulls a
-problem matched to the user through
-`GET /api/v1/problem/{userId}/{categoryId}`. **Random Problem** skips the choice,
-and **View Previous Submissions** opens every graded coding submission.
-
----
-
-## Solving a problem
-
-A full editor, a sample test case, and real execution on the server.
-
-![Solving a problem](docs/solve.gif)
-
-The editor is Monaco, the same one that powers VS Code, with Java syntax
-highlighting. Each problem ships starter code, its prompt, a sample input and
-the expected output.
-
-**Run** (`POST /api/v1/solution/run`) sends the source to the backend, which
-compiles it in memory with `javax.tools.JavaCompiler`, invokes the method against
-the sample test case, and returns the result. **Submit Final Answer**
-(`POST /api/v1/solution`) records the attempt and updates the proficiency that
-feeds the dashboard.
-
-Problems span `EASY`, `MEDIUM` and `HARD` across the three categories.
-
----
-
-## Submission history
-
-Every graded solution is saved, and **View Previous Submissions** lists them
-newest first with the problem, the grade, the time and the code you submitted.
-
-![Submission history](docs/history.gif)
-
-Shown above: the submission from the recording before it appears in the
-history with its code, then the page is reloaded to the sign-in screen (there is
-no logout button yet), the user signs back in, and it is still there. Grading saves the attempt (`POST /api/v1/solution`), and the page reads
-`GET /api/v1/solution/submissions?userId=`.
-
----
-
-## AI interview practice
-
-Written interview questions with model graded feedback, filtered by topic and
-difficulty.
-
-Pick a category and a difficulty, get a question, write an answer in your own
-words, and submit it for evaluation. This calls
-`POST /api/v1/chatbot/evaluate`, which prompts Google Gemini with the question,
-the answer and the difficulty, and returns a score plus written feedback.
-
-![AI interview practice](docs/ai-interview.gif)
-
-Shown above: a medium Two Pointers question, a typed answer, a 99/100 score with
-feedback, and the topic's progress going up on the dashboard.
-
-> Requires a `GEMINI_API_KEY`. Without one, the rest of the application works and
-> only this screen fails.
-
----
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <b>Sign up and sign in</b><br><br>
+      <img src="docs/auth.gif" width="100%" alt="A new account signing up"><br>
+      Client side validation on signup, and a failed login says what went wrong instead of failing silently. Passwords are hashed before they are stored.
+    </td>
+    <td width="50%" valign="top">
+      <b>Proficiency assessment</b><br><br>
+      <img src="docs/assessment.gif" width="100%" alt="The onboarding assessment questions"><br>
+      A new account answers four short questions, and the answers seed a starting proficiency for each topic. Two accounts that answer differently start in different places.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <b>Dashboard</b><br><br>
+      <img src="docs/dashboard.gif" width="100%" alt="The dashboard with a progress bar per topic"><br>
+      A live progress bar for each topic. Pick a topic to get a problem matched to you, or let <b>Random Problem</b> choose.
+    </td>
+    <td width="50%" valign="top">
+      <b>Solving a problem</b><br><br>
+      <img src="docs/solve.gif" width="100%" alt="Typing a Java solution in the editor and running it"><br>
+      A Monaco editor with Java highlighting. <b>Run</b> compiles your code on the server with <code>javax.tools.JavaCompiler</code> and checks it against the sample test case; <b>Submit</b> records the attempt and updates your proficiency.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <b>Submission history</b><br><br>
+      <img src="docs/history.gif" width="100%" alt="A graded submission in the history, still there after signing back in"><br>
+      Every graded solution is saved. <b>View Previous Submissions</b> lists them newest first with the problem, the grade, the time and the code, and they are still there after signing back in.
+    </td>
+    <td width="50%" valign="top">
+      <b>AI interview practice</b><br><br>
+      <img src="docs/ai-interview.gif" width="100%" alt="A medium Two Pointers question answered and scored 99 out of 100"><br>
+      Pick a topic and a difficulty, write an answer to an interview question, and Google Gemini returns a score with written feedback.
+    </td>
+  </tr>
+</table>
 
 ## Architecture
 
@@ -130,6 +84,7 @@ feedback, and the topic's progress going up on the dashboard.
 | `GET /api/v1/problem/{userId}/{categoryId}` | select a problem for this user |
 | `POST /api/v1/solution/run` | compile and run against the sample test case |
 | `POST /api/v1/solution` | submit, record, update proficiency |
+| `GET /api/v1/solution/submissions?userId=` | submission history |
 | `POST /api/v1/chatbot/evaluate` | grade a written interview answer |
 
 Six tables: `Users`, `Categories`, `Problems`, `Test_Cases`, `Submissions`,
@@ -144,7 +99,8 @@ Six tables: `Users`, `Categories`, `Problems`, `Test_Cases`, `Submissions`,
 - **A full JDK 17+**, not a JRE. Submitted solutions are compiled at runtime.
 - MySQL 8.0+
 - Node.js and npm
-- A Google Gemini API key, for the AI practice screen only
+- A Google Gemini API key for the AI practice screen. `GEMINI_API_KEY` has to be set
+  for the backend to start; any value works if you skip that screen.
 
 ### 1. Database
 
@@ -188,21 +144,21 @@ Change one and you must change the other, or the browser blocks every request.
 
 ---
 
-## About this project
+## Notes
 
-SmartPrep started as a three-person capstone project, and this repository
-continues from the team's final version.
+SmartPrep started as a three person capstone project, and this repository continues
+from the team's final version. I wrote the questions for the onboarding assessment, and a
+teammate built the screen that asks them. I built the AI feedback subsystem end to end:
+`ChatbotService`, `ChatbotServiceImpl`, `ChatbotController`, the request and response
+DTOs, the `ChatbotPage` React component and its styling, and the proficiency adjustment
+applied after each evaluation. The rest of the original app is my teammates' work.
 
-**What I built:**
+After the class I added the database schema and seed so it runs from a clean clone,
+`TEXT` columns for problem content (starter code used to get cut at 255 characters and
+squashed onto one line), and the coding submission history.
 
-- **The AI feedback subsystem**, end to end: `ChatbotService`,
-  `ChatbotServiceImpl`, `ChatbotController`, the request and response DTOs, and
-  the `ChatbotPage` React component with its styling.
-- **The JPA domain model**: the `Problem`, `Submission`, `Proficiency`,
-  `Category`, `User` and `TestCase` entities, plus the `ProblemDifficulty` and
-  `SolutionRating` enums. These are the six tables above.
-- **After the class:** the database schema and seed so it runs from a clean
-  clone, `TEXT` columns for problem content (starter code used to get cut at 255
-  characters and squashed onto one line), and the coding submission history.
-
-The rest is my teammates' work.
+It runs locally; there is no hosted instance. There is no logout button yet, which is
+why the history recording reloads the page to get back to the sign-in screen. The backend
+reads `GEMINI_API_KEY` at startup, so it has to be set even if you never open the AI
+practice screen. A placeholder value is enough for everything else; only that screen
+needs a real key.
